@@ -1,0 +1,28 @@
+{% extends 'default.html' %}
+
+{% block content %}
+<article>
+    <header>
+        <h1 class="mt-4">{{ post.title }}</h1>
+        <div class="text-muted">Posted on {{ post.created_at|date:"F j, Y" }} by {{ post.author }}</div>
+    </header>
+    <hr />
+    <section>
+        <p>{{ post.content }}</p>
+    </section>
+</article>
+
+<!-- Add a form for responses (if required) -->
+{% if user.is_authenticated %}
+<div class="mt-4">
+    <h5>Leave a Response:</h5>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="response_content" class="form-control mb-3" rows="5" placeholder="Write your response..."></textarea>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% else %}
+<p class="text-muted">You must be logged in to leave a response.</p>
+{% endif %}
+{% endblock %}
