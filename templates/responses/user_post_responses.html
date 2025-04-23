@@ -1,0 +1,56 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Отклики на мои объявления</h2>
+    
+    <!-- Фильтр по объявлениям -->
+    <div class="mb-4">
+        <form method="get" class="form-inline">
+            <div class="form-group mr-2">
+                <label for="post_filter" class="mr-2">Фильтр по объявлению:</label>
+                <select name="post_id" id="post_filter" class="form-control">
+                    <option value="">Все объявления</option>
+                    {% for post in user_posts %}
+                        <option value="{{ post.id }}" {% if selected_post == post.id %}selected{% endif %}>
+                            {{ post.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Применить</button>
+        </form>
+    </div>
+    
+    {% if post_responses %}
+        <div class="list-group">
+            {% for response in post_responses %}
+                <div class="list-group-item {% if response.is_accepted %}list-group-item-success{% endif %}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Отклик на: {{ response.post.title }}</h5>
+                        <small>{{ response.created_at|date:"F j, Y" }}</small>
+                    </div>
+                    <p class="mb-1">{{ response.response_text }}</p>
+                    <small>Автор: {{ response.author }}</small>
+                    
+                    <div class="mt-2">
+                        <form method="post" action="{% url 'accept_response' response.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm" {% if response.is_accepted %}disabled{% endif %}>
+                                {% if response.is_accepted %}Принято{% else %}Принять{% endif %}
+                            </button>
+                        </form>
+                        
+                        <form method="post" action="{% url 'delete_response' response.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Нет откликов на ваши объявления{% if selected_post %} с выбранным фильтром{% endif %}.</p>
+    {% endif %}
+</div>
+{% endblock %}

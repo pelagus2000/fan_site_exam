@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="alert alert-success">
+        <h4>Отклик принят!</h4>
+        <p>Вы успешно приняли отклик от пользователя {{ response.author }}.</p>
+    </div>
+    
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Объявление: {{ response.post.title }}</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ response.response_text }}</p>
+            <p class="card-text"><small class="text-muted">Дата создания: {{ response.created_at|date:"F j, Y" }}</small></p>
+        </div>
+    </div>
+    
+    <a href="{% url 'profile_view' %}" class="btn btn-primary">Вернуться в профиль</a>
+</div>
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Личный кабинет</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>{{ user.username }}</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Имя:</strong> {{ user.first_name }}</p>
+                    <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
+                    <a href="{% url 'logout' %}" class="btn btn-danger btn-sm mt-2">Выйти</a>
+                </div>
+            </div>
+
+            <div class="list-group mt-4">
+                <a href="{% url 'post_create' %}" class="list-group-item list-group-item-action">
+                    Создать новое объявление
+                </a>
+                <a href="#user-posts" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                    Мои объявления <span class="badge badge-primary">{{ user_posts.count }}</span>
+                </a>
+                <a href="#user-responses" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                    Мои отклики <span class="badge badge-secondary">{{ user_responses.count }}</span>
+                </a>
+                <a href="#post-responses" class="list-group-item list-group-item-action" data-bs-toggle="tab">
+                    Отклики на мои объявления <span class="badge badge-info">{{ post_responses.count }}</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="tab-content">
+                <!-- Мои объявления -->
+                <div class="tab-pane fade" id="user-posts">
+                    <h3>Мои объявления</h3>
+                    {% if user_posts %}
+                        <div class="list-group">
+                            {% for post in user_posts %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1"><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h5>
+                                        <small>{{ post.created_at|date:"F j, Y" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ post.content|truncatewords:20 }}</p>
+                                    <small>Категория: {{ post.category.name }}</small>
+
+                                    <div class="mt-2">
+                                        <a href="{% url 'post_update' post.id %}" class="btn btn-primary btn-sm">Редактировать</a>
+                                        <a href="{% url 'post_delete' post.id %}" class="btn btn-danger btn-sm">Удалить</a>
+                                        <a href="#post-responses" data-toggle="tab" data-post="{{ post.id }}" class="btn btn-info btn-sm post-filter">
+                                            Отклики ({{ post.responses.count }})
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>У вас пока нет объявлений.</p>
+                        <a href="{% url 'post_create' %}" class="btn btn-primary">Создать объявление</a>
+                    {% endif %}
+                </div>
+
+                <!-- Мои отклики -->
+                <div class="tab-pane fade" id="user-responses">
+                    <h3>Мои отклики</h3>
+                    {% if user_responses %}
+                        <div class="list-group">
+                            {% for response in user_responses %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1"><a href="{% url 'post_detail' response.post.id %}">{{ response.post.title }}</a></h5>
+                                        <small>{{ response.created_at|date:"F j, Y" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ response.response_text }}</p>
+                                    <small class="text-{% if response.is_accepted %}success{% else %}muted{% endif %}">
+                                        Статус: {% if response.is_accepted %}Принят{% else %}Ожидает рассмотрения{% endif %}
+                                    </small>
+
+                                    {% if user.author == response.author %}
+                                        <div class="mt-2">
+                                            <form method="post" action="{% url 'delete_response' response.id %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>У вас пока нет откликов на объявления.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Отклики на мои объявления -->
+                <div class="tab-pane fade" id="post-responses">
+                    <h3>Отклики на мои объявления</h3>
+
+                    <!-- Фильтр по объявлениям -->
+                    <div class="mb-4">
+                        <form method="get" class="form-inline">
+                            <div class="form-group mr-2">
+                                <label for="post_filter" class="mr-2">Фильтр по объявлению:</label>
+                                <select name="post_id" id="post_filter" class="form-control">
+                                    <option value="">Все объявления</option>
+                                    {% for post in user_posts %}
+                                        <option value="{{ post.id }}" {% if selected_post == post.id %}selected{% endif %}>
+                                            {{ post.title }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Применить</button>
+                        </form>
+                    </div>
+
+                    {% if post_responses %}
+                        <div class="list-group">
+                            {% for response in post_responses %}
+                                <div class="list-group-item {% if response.is_accepted %}list-group-item-success{% endif %}">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Отклик на: {{ response.post.title }}</h5>
+                                        <small>{{ response.created_at|date:"F j, Y" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ response.response_text }}</p>
+                                    <small>Автор: {{ response.author }}</small>
+
+                                    <div class="mt-2">
+                                        <form method="post" action="{% url 'accept_response' response.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-success btn-sm" {% if response.is_accepted %}disabled{% endif %}>
+                                                {% if response.is_accepted %}Принято{% else %}Принять{% endif %}
+                                            </button>
+                                        </form>
+
+                                        <form method="post" action="{% url 'delete_response' response.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>Нет откликов на ваши объявления{% if selected_post %} с выбранным фильтром{% endif %}.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{#<script>#}
+{#// JavaScript для работы с фильтрацией откликов по объявлениям#}
+{#document.addEventListener('DOMContentLoaded', function() {#}
+{#    // Активация первой вкладки по умолчанию#}
+{#    document.querySelector('.list-group-item[data-bs-toggle="tab"]').click();#}
+{##}
+{#    // Обработчик для кнопок фильтрации#}
+{#    document.querySelectorAll('.post-filter').forEach(function(button) {#}
+{#        button.addEventListener('click', function(event) {#}
+{#            const postId = this.getAttribute('data-post');#}
+{#            // Установка выбранного значения в фильтре#}
+{#            document.getElementById('post_filter').value = postId;#}
+{#            // Отправка формы фильтрации#}
+{#            document.querySelector('form').submit();#}
+{#        });#}
+{#    });#}
+{#});#}
+{#</script>#}
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Convert Bootstrap 4 attributes to Bootstrap 5
+        document.querySelectorAll('[data-toggle="tab"]').forEach(function(element) {
+            element.setAttribute('data-bs-toggle', 'tab');
+            element.removeAttribute('data-toggle');
+        });
+
+        // Activate the first tab when the page loads
+        var firstTab = document.querySelector('.list-group-item[data-bs-toggle="tab"]');
+        if (firstTab) {
+            var tabTrigger = new bootstrap.Tab(firstTab);
+            tabTrigger.show();
+        }
+
+        // Handle post filter buttons
+        document.querySelectorAll('.post-filter').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var postId = this.getAttribute('data-post');
+
+                // Filter responses in the post-responses tab
+                if (postId) {
+                    var allResponses = document.querySelectorAll('#post-responses .response-item');
+
+                    allResponses.forEach(function(item) {
+                        var itemPostId = item.getAttribute('data-post-id');
+
+                        if (postId === 'all' || itemPostId === postId) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+
+                    // Update active filter indicator
+                    document.querySelectorAll('.post-filter').forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Add "Show all" button for responses if it doesn't exist
+        var responseTabContent = document.getElementById('post-responses');
+        if (responseTabContent && !document.querySelector('.show-all-responses')) {
+            var showAllButton = document.createElement('button');
+            showAllButton.className = 'btn btn-outline-secondary btn-sm mb-3 show-all-responses post-filter';
+            showAllButton.setAttribute('data-post', 'all');
+            showAllButton.textContent = 'Показать все отклики';
+
+            showAllButton.addEventListener('click', function() {
+                document.querySelectorAll('#post-responses .response-item').forEach(function(item) {
+                    item.style.display = '';
+                });
+
+                document.querySelectorAll('.post-filter').forEach(function(btn) {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+
+            responseTabContent.insertBefore(showAllButton, responseTabContent.firstChild);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h2>Delete Post</h2>
+<p>Are you sure you want to delete this post?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+</form>
+<a href="{% url 'post_list' %}">Cancel</a>
+{% endblock %}

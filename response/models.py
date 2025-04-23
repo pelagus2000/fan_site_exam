@@ -1,6 +1,9 @@
 from django.db import models
+from django.db.models.signals import post_save
+# from django.dispatch import receiver
 from post.models import Post
 from author.models import Author
+
 
 
 class Response(models.Model):
@@ -12,3 +15,8 @@ class Response(models.Model):
 
     def __str__(self):
         return self.response_text
+
+from .signals import notify_post_author
+
+# Подключение сигнала post_save к Response
+post_save.connect(notify_post_author, sender=Response)

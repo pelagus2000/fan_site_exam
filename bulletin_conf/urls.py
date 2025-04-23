@@ -14,14 +14,25 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from xml.etree.ElementInclude import include
+
+# bulletin_conf/urls.py
 
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
-import post
+# from post.views import ckeditor_upload_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('post.urls')),
+    path('', include('post.urls')),  # Post app
+    path('author/', include('author.urls')),
+    path('response/', include('response.urls')),
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
+    # path('ckeditor/upload/', ckeditor_upload_view, name='ckeditor_upload'),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

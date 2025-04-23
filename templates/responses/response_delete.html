@@ -1,0 +1,17 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Удалить отклик</h2>
+    <div class="alert alert-warning">
+        <p>Вы уверены, что хотите удалить этот отклик?</p>
+        <p><strong>Текст отклика:</strong> {{ response.response_text }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Да, удалить</button>
+        <a href="{% url 'profile_view' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

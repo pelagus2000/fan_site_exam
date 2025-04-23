@@ -1,0 +1,184 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}{{ flatpage.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Резюме - Раменский Евгений Павлович</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 25px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+        }
+        ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+        .project {
+            margin-bottom: 20px;
+        }
+        .project-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .education-item {
+            margin-bottom: 15px;
+        }
+        .degree {
+            font-weight: bold;
+        }
+        .university {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Раменский Евгений Павлович</h1>
+        <p><strong>Python/Django разработчик</strong></p>
+
+        <div class="contact-info">
+            <div class="contact-item">📱 +7 (978) 316-47-25</div>
+            <div class="contact-item">📧 pelagus2014@gmail.com</div>
+            <div class="contact-item">🔗 <a href="https://github.com/pelagus2000">github.com/pelagus2000</a></div>
+            <div class="contact-item">🌐 <a href="https://linkedin.com/in/yourprofile">linkedin.com/in/yourprofile</a></div>
+            <div class="contact-item">📍 Севстополь, Россия (готов к удаленной работе)</div>
+        </div>
+    </header>
+
+    <section>
+        <h2>Профиль</h2>
+        <p>Джуниор Python/Django разработчик со знаниями в области веб-разработки и бэкенд-архитектуры. Специализируюсь на создании высоконагруженных и масштабируемых веб-приложений с использованием современных технологий и лучших практик программирования. Имею опыт в проектировании RESTful API, работе с базами данных и интеграции различных сервисов.</p>
+    </section>
+
+    <section>
+        <h2>Технические навыки</h2>
+
+        <h3>Языки программирования</h3>
+        <ul>
+            <li>Python (Django, Flask, FastAPI)</li>
+            <li>SQL, HTML5, CSS3</li>
+        </ul>
+
+        <h3>Базы данных</h3>
+        <ul>
+            <li>PostgreSQL</li>
+            <li>Redis</li>
+            <li>SQLite</li>
+        </ul>
+
+        <h3>Инструменты и технологии</h3>
+        <ul>
+            <li>Git, GitHub</li>
+            <li>Docker, Docker Compose</li>
+            <li>Celery</li>
+            <li>RESTful API</li>
+            <li>Linux/Unix</li>
+            <li>Agile/Scrum методологии</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Опыт работы</h2>
+        <p>Python/Django разработчик</p>
+    </section>
+
+    <section>
+        <h2>Проекты</h2>
+
+        <div class="project">
+            <div class="project-title">Доска объявлений для MMORPG-сообщества</div>
+            <ul>
+                <li><strong>Технологии:</strong> Django 5.2, Python 3.11, PostgreSQL, Redis, Celery, Bootstrap 5, CKEditor 5</li>
+                <li><strong>Особенности:</strong> Система регистрации с верификацией по email, категоризация объявлений, система откликов с уведомлениями, еженедельные рассылки новых объявлений</li>
+                <li><strong>Результат:</strong> Создана полноценная платформа для игрового сообщества с интуитивно понятным интерфейсом и всеми необходимыми инструментами для взаимодействия игроков.</li>
+            </ul>
+        </div>
+
+        <div class="project">
+            <div class="project-title">Агрегатор игровых новостей</div>
+            <ul>
+                <li><strong>Технологии:</strong> Flask, Redis, MongoDB, BeautifulSoup, Celery</li>
+                <li><strong>Особенности:</strong> Система парсинга новостных ресурсов, классификация новостей по жанрам, сервис рекомендаций на основе предпочтений пользователя</li>
+                <li><strong>Результат:</strong> Увеличение пользовательской базы до 10,000+ активных пользователей в месяц</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Образование</h2>
+
+        <div class="education-item">
+            <div class="degree">Магистр информационных технологий</div>
+            <div class="university">Московский технический университет | 2017-2019</div>
+            <ul>
+                <li>Специализация: Веб-разработка и информационные системы</li>
+                <li>Дипломный проект: "Разработка масштабируемой платформы для онлайн-обучения с использованием Django"</li>
+            </ul>
+        </div>
+
+        <div class="education-item">
+            <div class="degree">Бакалавр компьютерных наук</div>
+            <div class="university">Московский технический университет | 2013-2017</div>
+            <ul>
+                <li>Специализация: Программирование и информационные системы</li>
+                <li>Средний балл: 4.8/5.0</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Сертификаты</h2>
+        <!-- Пусто, как в оригинале -->
+    </section>
+
+    <section>
+        <h2>Языки</h2>
+        <ul>
+            <li>Русский: Родной</li>
+            <li>Английский: Продвинутый (C1)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Дополнительная информация</h2>
+        <ul>
+            <li>Активный участник сообщества Python-разработчиков</li>
+            <li>Регулярно выступаю на локальных IT-митапах</li>
+            <li>Автор технического блога о веб-разработке и Python</li>
+            <li>Увлечения: шахматы, чтение, turn-based strategy, MMORPG, подводное плавание, охота, рыбалка, кемпинг</li>
+        </ul>
+    </section>
+</body>
+</div>
+{% endblock %}

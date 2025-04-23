@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'author.apps.AuthorConfig',
     'django.contrib.flatpages',
     'django.contrib.sites',
+    'django_ckeditor_5',
+    'redis',
+    'celery',
+    'django_celery_beat',
 
 ]
 
@@ -140,18 +144,145 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_HOST = 'smtp.yandex.ru'  # Замените на нужный SMTP-сервер
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'pelagus2000@yande.ru'  # Замените на ваш логин от SMTP-сервера
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') # Замените на ваш пароль
+EMAIL_HOST_USER = 'pelagus2000@yandex.ru'  # Замените на ваш логин от SMTP-сервера
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') # Замените на ваш пароль
+EMAIL_HOST_PASSWORD = '******'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Замените на подходящий email
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL подключения к Redis
+SITE_ID = 1
+
+# Add this to your MEDIA settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Определите customColorPalette для таблиц
+customColorPalette = [
+    {'color': 'hsl(4, 90%, 58%)', 'label': 'Red'},
+    {'color': 'hsl(340, 82%, 52%)', 'label': 'Pink'},
+    {'color': 'hsl(291, 64%, 42%)', 'label': 'Purple'},
+    {'color': 'hsl(262, 52%, 47%)', 'label': 'Deep Purple'},
+    {'color': 'hsl(231, 48%, 48%)', 'label': 'Indigo'},
+    {'color': 'hsl(207, 90%, 54%)', 'label': 'Blue'},
+]
+
+# CKEDITOR_5_CONFIGS = {
+#     'extends': {
+#         'toolbar': [
+#             'heading', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+#             'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo', 'emoji',
+#         ],
+#         'blockToolbar': [
+#             'paragraph', 'heading1', 'heading2', 'heading3',
+#             'bulletedList', 'numberedList',
+#         ],
+#         'image': {
+#             'toolbar': [
+#                 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+#                 'toggleImageCaption', 'imageTextAlternative'
+#             ]
+#         },
+#         'fontColor': {
+#             'colors': customColorPalette
+#         },
+#     },
+# }
+
+# # Ограничение размера изображений при загрузке в CKEditor (в байтах)
+CKEDITOR_5_FILE_SIZE_LIMIT = 2 * 1024 * 1024  # 5 MB
+
+# # Разрешенные типы файлов для загрузки
+CKEDITOR_5_FILE_TYPES = ['jpeg', 'jpg', 'png', 'gif', 'webp']
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': {
+            'items': ['heading', '|', 'bold', 'italic', 'link',
+                      'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+                    }
+
+    },
+    'extends': {
+        'blockToolbar': [
+            'paragraph', 'heading1', 'heading2', 'heading3',
+            '|',
+            'bulletedList', 'numberedList',
+            '|',
+            'blockQuote',
+        ],
+        'toolbar': {
+            'items': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
+                      'code','subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
+                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
+                    'insertTable',
+                    ],
+            'shouldNotGroupWhenFull': True
+        },
+        'image': {
+            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
+                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side',  '|'],
+            'styles': [
+                'full',
+                'side',
+                'alignLeft',
+                'alignRight',
+                'alignCenter',
+            ]
+
+        },
+        'table': {
+            'contentToolbar': [ 'tableColumn', 'tableRow', 'mergeTableCells',
+            'tableProperties', 'tableCellProperties' ],
+            'tableProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            },
+            'tableCellProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            }
+        },
+        'heading' : {
+            'options': [
+                { 'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph' },
+                { 'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1' },
+                { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
+                { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
+            ]
+        }
+    },
+    'list': {
+        'properties': {
+            'styles': 'true',
+            'startIndex': 'true',
+            'reversed': 'true',
+        }
+    }
+}
+
+# Define a constant in settings.py to specify file upload permissions
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"  # Possible values: "staff", "authenticated", "any"
+
+
+# Настройки Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
-SITE_ID = 1
+# Настройки Celery Beat для периодических задач
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# URL вашего сайта для формирования полных ссылок в письмах
+SITE_URL = 'http://localhost:8000'  # Замените на реальный URL
+
+# Настройки для шаблонов писем
+EMAIL_TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates/email')

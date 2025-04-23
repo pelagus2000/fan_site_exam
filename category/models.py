@@ -1,6 +1,6 @@
 from django.db import models
 
-
+#file
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)  # Название категории
 

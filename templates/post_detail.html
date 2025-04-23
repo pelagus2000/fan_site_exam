@@ -1,28 +1,129 @@
-{% extends 'default.html' %}
+{#{% extends 'flatpages/default.html' %}#}
+{##}
+{#{% block content %}#}
+{#<article>#}
+{#    <header>#}
+{#        <h1 class="mt-4">{{ post.title }}</h1>#}
+{#        <div class="text-muted">#}
+{#            Posted on {{ post.created_at|date:"F j, Y" }} by {{ post.author }}#}
+{#            {% if post.updated_at|date:"YmdHis" > post.created_at|date:"YmdHis" %}#}
+{#                <br>Updated on {{ post.updated_at|date:"F j, Y H:i" }}#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </header>#}
+{##}
+{##}
+{#    <!-- Buttons for post author -->#}
+{#    {% if user.is_authenticated and user.author == post.author %}#}
+{#    <div class="mt-2 mb-3">#}
+{#        <a href="{% url 'post_update' post.pk %}" class="btn btn-primary btn-sm">Обновить</a>#}
+{#        <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger btn-sm">Удалить</a>#}
+{#    </div>#}
+{#    {% endif %}#}
+{##}
+{#    <hr />#}
+{#    <section>#}
+{#        <p>{{ post.content }}</p>#}
+{#    </section>#}
+{#</article>#}
+{##}
+{#<!-- Add a form for responses -->#}
+{#{% if user.is_authenticated %}#}
+{#    {% if user.author == post.author %}#}
+{#        <div class="alert alert-warning mt-4">#}
+{#            <p>Вы не можете оставить отклик на свой собственный пост.</p>#}
+{#        </div>#}
+{#    {% else %}#}
+{#        <div class="mt-4">#}
+{#            <h5>Оставить отклик:</h5>#}
+{#            <form method="post" action="{% url 'submit_response' post.pk %}">#}
+{#                {% csrf_token %}#}
+{#                <textarea name="response_text" class="form-control mb-3" rows="5" placeholder="Напишите свой комментарий..."></textarea>#}
+{#                <button type="submit" class="btn btn-primary">Отправить</button>#}
+{#            </form>#}
+{#        </div>#}
+{#    {% endif %}#}
+{#{% else %}#}
+{#    <p class="text-muted mt-4">Вы должны войти в систему, чтобы оставить комментарий.</p>#}
+{#{% endif %}#}
+{##}
+{#<!-- Display existing responses -->#}
+{#<div class="mt-4">#}
+{#    <h4>Отклики:</h4>#}
+{#    {% for response in post.responses.all %}#}
+{#        <div class="card mb-3">#}
+{#            <div class="card-body">#}
+{#                <p>{{ response.response_text }}</p>#}
+{#                <small class="text-muted">{{ response.author }} | {{ response.created_at|date:"F j, Y" }}</small>#}
+{#            </div>#}
+{#        </div>#}
+{#    {% empty %}#}
+{#        <p>Нет откликов к этому посту.</p>#}
+{#    {% endfor %}#}
+{#</div>#}
+{#{% endblock %}#}
+
+{% extends 'flatpages/default.html' %}
 
 {% block content %}
 <article>
     <header>
         <h1 class="mt-4">{{ post.title }}</h1>
-        <div class="text-muted">Posted on {{ post.created_at|date:"F j, Y" }} by {{ post.author }}</div>
+        <div class="text-muted">
+            Posted on {{ post.created_at|date:"F j, Y" }} by {{ post.author }}
+            {% if post.updated_at|date:"YmdHis" > post.created_at|date:"YmdHis" %}
+                <br>Updated on {{ post.updated_at|date:"F j, Y H:i" }}
+            {% endif %}
+        </div>
     </header>
+
+
+    <!-- Buttons for post author -->
+    {% if user.is_authenticated and user.author == post.author %}
+    <div class="mt-2 mb-3">
+        <a href="{% url 'post_update' post.pk %}" class="btn btn-primary btn-sm">Обновить</a>
+        <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+    </div>
+    {% endif %}
+
     <hr />
     <section>
-        <p>{{ post.content }}</p>
+        <div>{{ post.content|safe }}</div>
     </section>
 </article>
 
-<!-- Add a form for responses (if required) -->
+<!-- Add a form for responses -->
 {% if user.is_authenticated %}
-<div class="mt-4">
-    <h5>Leave a Response:</h5>
-    <form method="post">
-        {% csrf_token %}
-        <textarea name="response_content" class="form-control mb-3" rows="5" placeholder="Write your response..."></textarea>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
+    {% if user.author == post.author %}
+        <div class="alert alert-warning mt-4">
+            <p>Вы не можете оставить отклик на свой собственный пост.</p>
+        </div>
+    {% else %}
+        <div class="mt-4">
+            <h5>Оставить отклик:</h5>
+            <form method="post" action="{% url 'submit_response' post.pk %}">
+                {% csrf_token %}
+                <textarea name="response_text" class="form-control mb-3" rows="5" placeholder="Напишите свой комментарий..."></textarea>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+        </div>
+    {% endif %}
 {% else %}
-<p class="text-muted">You must be logged in to leave a response.</p>
+    <p class="text-muted mt-4">Вы должны войти в систему, чтобы оставить комментарий.</p>
 {% endif %}
+
+<!-- Display existing responses -->
+<div class="mt-4">
+    <h4>Отклики:</h4>
+    {% for response in post.responses.all %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p>{{ response.response_text }}</p>
+                <small class="text-muted">{{ response.author }} | {{ response.created_at|date:"F j, Y" }}</small>
+            </div>
+        </div>
+    {% empty %}
+        <p>Нет откликов к этому посту.</p>
+    {% endfor %}
+</div>
 {% endblock %}

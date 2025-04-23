@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h2>Register</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>{{ form.username.label_tag }} {{ form.username }}</p>
+    <p>{{ form.email.label_tag }} {{ form.email }}</p>
+    <p>{{ form.password.label_tag }} {{ form.password }}</p>
+    <p>{{ form.password2.label_tag }} {{ form.password2 }}</p>
+    <button type="submit">Register</button>
+</form>
+{% if error %} <p style="color:red;">{{ error }}</p> {% endif %}
+{% if success %} <p style="color:green;">{{ success }}</p> {% endif %}
+{% if form.non_field_errors %}
+<div style="color:red;">
+    {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

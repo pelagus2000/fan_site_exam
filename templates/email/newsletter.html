@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Новые объявления на нашем сайте</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f8f8; padding: 10px; text-align: center; }
+        .post { margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #eee; }
+        .post-title { color: #333; font-size: 18px; font-weight: bold; }
+        .post-date { color: #777; font-size: 14px; }
+        .post-content { margin-top: 10px; }
+        .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #777; }
+        .button { display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Новые объявления на нашем сайте</h1>
+        </div>
+
+        <p>Здравствуйте, {{ username }}!</p>
+
+        <p>Ознакомьтесь с последними объявлениями на нашем сайте:</p>
+
+        {% for post in posts %}
+        <div class="post">
+            <div class="post-title">{{ post.title }}</div>
+            <div class="post-date">{{ post.created_at|date:"d.m.Y" }}</div>
+            <div class="post-content">
+                {{ post.short_content }}
+                <br>
+                <a href="{{ site_url }}{{ post.get_absolute_url }}" class="button">Читать полностью</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>На этой неделе новых объявлений не было.</p>
+        {% endfor %}
+
+        <div class="footer">
+            <p>
+                Вы получили это письмо, потому что подписаны на рассылку нашего сайта.<br>
+                Если вы хотите отписаться, <a href="{{ unsubscribe_url }}">нажмите здесь</a>.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
