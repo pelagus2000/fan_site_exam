@@ -17,13 +17,12 @@
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'post_list' %}">Start Bootstrap</a><!-- Link to the homepage -->
+                <a class="navbar-brand" href="{% url 'post_list' %}">SKILLFACTORY</a><!-- Link to the homepage -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link active" href="{% url 'post_list' %}">Home</a></li> <!-- Links to post_list -->
-                        <li class="nav-item"><a class="nav-link active" href="/about/">About</a></li> <!-- Placeholder -->
-                        <li class="nav-item"><a class="nav-link active" href="/contacts/">Contact</a></li> <!-- Placeholder -->
+{#                        <li class="nav-item"><a class="nav-link active" href="/about/">About</a></li> <!-- Placeholder -->#}
+{#                        <li class="nav-item"><a class="nav-link active" href="/contacts/">Contact</a></li> <!-- Placeholder -->#}
                         {% if user.is_authenticated %}
                             <li class="nav-item"><a class="nav-link active" href="{% url 'profile' %}">{{ user.username }}</a></li>
                             <li class="nav-item"><a class="nav-link active" href="{% url 'logout' %}">Logout</a></li>
@@ -42,7 +41,7 @@
             <div class="container">
                 <div class="text-center my-5">
                     <h1 class="fw-bolder">Welcome to fan site of MMORPG!</h1>
-                    <p class="lead mb-0">A Bootstrap 5 starter layout for your next blog homepage</p>
+                    <p class="lead mb-0">A layout for your next blog homepage</p>
                 </div>
             </div>
         </header>
@@ -53,7 +52,11 @@
         </div>
         <!-- Footer-->
         <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+            <div class="nav-item" style="display: flex; justify-content: center; width: 100%;">
+                <a class="nav-link active text-white" href="/about/">About</a>____
+                <a class="nav-link active text-white" href="/contacts/">Contact</a>
+            </div>
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Era 2025</p></div>
         </footer>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
